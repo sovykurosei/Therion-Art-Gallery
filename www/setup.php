@@ -122,11 +122,7 @@ class database_connection
     }
 }
 
-if(!isset($_POST['step']))
-{
-    include('themes/deeppurple/setup.tpl');
-}
-elseif($_POST['step'] == 1)
+if(isset($_POST['step']) && $_POST['step'] == 1)
 {
     $error_list = null;
     if(!isset($skip_db_creation))
@@ -183,9 +179,7 @@ elseif($_POST['step'] == 1)
             include('themes/deeppurple/setup2.tpl');
         }
     }
-}
-elseif($_POST['step'] == 2)
-{
+
     include('database_connection.php');
     $account_info['email'] = $_POST['email'];
     $account_info['password'] = $_POST['password'];
@@ -205,109 +199,150 @@ elseif($_POST['step'] == 2)
         print_r($error_list);
     }
 }
-
+else
+{
 
 echo <<<HEREDOC
 
 <html>
 <head>
+<style>
+    body 
+    {
+        background-color: #FFFFFF;
+        font-family: Arial;
+    }
+    .header
+    {
+        font-size: 20pt;
+        text-align: center;
+    }
+    .center
+    {
+        width: 50%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .left
+    {
+        float: left;
+    }
+    .right
+    {
+        float: right;
+    }
+    .segment
+    {
+        overflow: auto;
+        margin-top: 15px;
+    }
+    .outline
+    {
+        border-style: solid;
+        border-color: #BB1111;
+        border-width: 1px;
+        padding: 10px;
+        width: 500px;
+        clear: both;
+        margin-top: 30px;
+    }
+    .legend
+    {
+        background-color: #FFFFFF;
+        float: left;
+        position: relative;
+        top: -20px;
+        left: 30px;
+        padding-left: 10px;
+        padding-right: 10px;
+        float: clear;
+    }
+    .legend-spacer
+    {
+        margin-top: 20px;
+    }
+    .submit
+    {
+        text-align: center;
+    }
+    .submit-outline
+    {
+        border-style: solid;
+        border-color: #BB1111;
+        border-width: 1px;
+        padding: 10px;
+        width: 300px;
+        clear: both;
+        margin-top: 30px;
+        float: clear;
+    }
+}
+</style>
 </head>
 <body>
+<div class = "header">INSTALLATION</div>
 <form name = "input" action = "setup.php" method = "post">
-    <div class = "width">
-        <div class = "legend">Database Details</div>
-        <div class = "container">
-            <div class = "segment">
-                <div class = "left">Database type</div>
-                <div class = "right"><select name = "db_type"><option value = "mysql">MySQL</option></select></div>
-            </div>
-            <div class = "segment">
-                <div class = "left">Database Server Hostname</div>
-                <div class = "right"><input type = "text" name = "db_hostname" value = "localhost" /></div>
-            </div>
-            <div class = "segment">
-                <div class = "left">Database Server Port</div>
-                <div class = "right"><input type = "text" name = "db_port" /></div>
-            </div>
-            <div class = "spacer"></div>
-            <div class = "segment">
-                <div class = "left">Database Name</div>
-                <div class = "right"><input type = "text" name = "db_name" value = "tag"/></div>
-            </div>
-            <div class = "segment">
-                <div class = "left">Database Username</div>
-                <div class = "right"><input type = "text" name = "db_username" value = "root"/></div>
-            </div>
-            <div class = "segment">
-                <div class = "left">Database Password</div>
-                <div class = "right"><input type = "password" name = "db_password" value = "tag"/></div>
-            </div>
+    <div class = "center outline">
+        <div class = "legend">Database</div>
+        <div class = "segment legend-spacer">
+            <div class = "left">Database type</div>
+            <div class = "right"><select name = "db_type"><option value = "mysql">MySQL</option></select></div>
         </div>
-    </div>
-    <div class = "width">
-        <div class = "legend">TAG User</div>
-        <div class = "container">
-                <div class = "segment">
-                <div class = "left">TAG Username</div>
-                <div class = "right"><input type = "text" name = "db_tag_username" value = "tagger"/></div>
-            </div>
-            <div class = "segment">
-                <div class = "left">TAG Password</div>
-                <div class = "right"><input type = "password" name = "db_tag_password" value = "tag"/></div>
-            </div>
-            <div class = "segment">
-                <div class = "left">Retype Password</div>
-                <div class = "right"><input type = "password" name = "db_tag_password_retype" value = "tag"/></div>
-            </div>
+        <div class = "segment">
+            <div class = "left">Database Server Hostname</div>
+            <div class = "right"><input type = "text" name = "db_hostname" value = "localhost" /></div>
         </div>
-    </div>
-    <div class = "center spacer">
-        <input type = "hidden" name = "step" value = "1">
-        <input type = "submit" value = "Submit" />
-    </div>
-
-    <div class = "width">
-        <div class = "legend">Register Admin Account</div>
-        <div class = "container">
-            <div class = "segment">
-                <div class = "left">Email Address</div>
-                <div class = "right"><input type = "text" name = "email" value = "sovy.kurosei@gmail.com"/></div>
-            </div>
-            <div class = "segment">
-                <div class = "left">Password</div>
-                <div class = "right"><input type = "password" name = "password" value = "sovy"/></div>
-            </div>
-            <div class = "segment">
-                <div class = "left">Retype Password</div>
-                <div class = "right"><input type = "password" name = "password_retype" value = "sovy"/></div>
-            </div>
-            <div class = "segment">
-                <div class = "left">Short Name</div>
-                <div class = "right"><input type = "text" name = "short_name" value = "sovy"/></div>
-            </div>
-            <div class = "segment">
-                <div class = "left">Long Name</div>
-                <div class = "right"><input type = "text" name = "long_name" value = "Sovy Kurosei"/></div>
-            </div>
+        <div class = "segment">
+            <div class = "left">Database Server Port</div>
+            <div class = "right"><input type = "text" name = "db_port" /></div>
+        </div>
+        <div class = "segment">
+            <div class = "left">Database Name</div>
+            <div class = "right"><input type = "text" name = "db_name" /></div>
+        </div>
+        <div class = "segment">
+            <div class = "left">Database Username</div>
+            <div class = "right"><input type = "text" name = "db_username" /></div>
+        </div>
+        <div class = "segment">
+            <div class = "left">Database Password</div>
+            <div class = "right"><input type = "password" name = "db_password" /></div>
         </div>
     </div>
 
-
-
-
-
-
-
-
-    <form name = "input" action = "index.php" method = "post">
-<div class = "width">
-    <div class = "legend">Success!</div>
-    <div class = "container">
-        <div class = "segment center">Installation and configuration is a success!</div>
+    <div class = "center outline">
+        <div class = "legend">Admin Account</div>
+        <div class = "segment legend-spacer">
+            <div class = "left">Email Address</div>
+            <div class = "right"><input type = "text" name = "email" "/></div>
+        </div>
+        <div class = "segment">
+        <div class = "left">Password</div>
+            <div class = "right"><input type = "password" name = "password" /></div>
+        </div>
+        <div class = "segment">
+            <div class = "left">Retype Password</div>
+            <div class = "right"><input type = "password" name = "password_retype" /></div>
+        </div>
+        <div class = "segment">
+            <div class = "left">Short Name</div>
+            <div class = "right"><input type = "text" name = "short_name" /></div>
+        </div>
+        <div class = "segment">
+            <div class = "left">Long Name</div>
+            <div class = "right"><input type = "text" name = "long_name" /></div>
+        </div>
     </div>
-</div>
-<div class = "center spacer">
-    <input type = "submit" value = "Submit" />
-</div>
+
+    <div class = "center submit-outline">
+        <div class = "legend">Submit</div>
+        <div class = "segment legend-spacer">
+            <div class = "submit"><input type = "submit" value = "Submit" /></div>
+        </div>
+    </div>
 </form>
+
+HEREDOC;
+
+}
 ?>
