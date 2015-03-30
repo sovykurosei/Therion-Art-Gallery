@@ -25,7 +25,7 @@ function __autoload($class_name)
 class create_tag
 {
     private $error_list;
-    function __construct($db_type, $db_name, $db_hostname, $db_port, $db_username, $db_password, $db_tag_username, $db_tag_password)
+    function __construct($db_type, $db_name, $db_hostname, $db_port, $db_username, $db_password)
     {
         if($db_type == "mysql")
         {
@@ -34,10 +34,6 @@ class create_tag
         }
 
         $statement = $connection->prepare('DROP TABLE nodes, node_attributes, account_attributes, accounts, notifications, tags, entity_tags');
-        $statement->execute();
-
-        $statement = null;
-        $statement = $connection->prepare("DROP USER 'tagger'@'localhost'");
         $statement->execute();
 
         $statement = null;
@@ -71,25 +67,8 @@ class create_tag
         $main_db_username = $db_username;
         $main_db_username_password = $db_password;
 
-        if(isset($db_tag_username))
-        {
-            $working_query = "CREATE USER '$db_tag_username'@'localhost' IDENTIFIED BY '$db_tag_password'";
-            $statement = $connection->prepare($working_query);
-            $statement->execute();
-
-            $working_query = "GRANT SELECT, INSERT, UPDATE ON $db_name.* to '$db_tag_username'@'localhost'";
-            $statement = $connection->prepare($working_query);
-            $statement->execute();
-
-            $main_db_username = $db_tag_username;
-            $main_db_username_password = $db_tag_password;
-        }
-
         $handle = fopen('database_connection.php', 'w') or die("can't open file");
         $file_contents = '<?php
-
-$connection_object = new database_connection();
-$connection = $connection_object->get_connection();
 
 class database_connection
 {
@@ -122,7 +101,7 @@ class database_connection
     }
 }
 
-if(isset($_POST['step']) && $_POST['step'] == 1)
+if(isset($_GET['install']) && $_GET['install'] == 1)
 {
     $error_list = null;
     if(!isset($skip_db_creation))
@@ -133,9 +112,6 @@ if(isset($_POST['step']) && $_POST['step'] == 1)
         $db_name = $_POST['db_name'];
         $db_username = $_POST['db_username'];
         $db_password = $_POST['db_password'];
-        $db_tag_username = $_POST['db_tag_username'];
-        $db_tag_password = $_POST['db_tag_password'];
-        $db_tag_password_retype = $_POST['db_tag_password_retype'];
 
         if($db_type == null)
         {
@@ -153,32 +129,10 @@ if(isset($_POST['step']) && $_POST['step'] == 1)
         {
             $error_list[] = "Database username not entered.";
         }
-        if($db_tag_password != $db_tag_password_retype)
-        {
-            $error_list[] = "TAG passwords do not match.";
-        }
     }
 
-    if(isset($error_list))
-    {
-
-    }
-    else
-    {
-        if(!isset($skip_db_creation))
-        {
-            $create_tag = new create_tag($db_type, $db_name, $db_hostname, $db_port, $db_username, $db_password, $db_tag_username, $db_tag_password);
-            $error_list = $create_tag->get_error_list();
-        }
-        if(isset($error_list))
-        {
-
-        }
-        else
-        {
-            include('themes/deeppurple/setup2.tpl');
-        }
-    }
+    $create_tag = new create_tag($db_type, $db_name, $db_hostname, $db_port, $db_username, $db_password);
+    $error_list = $create_tag->get_error_list();
 
     include('database_connection.php');
     $account_info['email'] = $_POST['email'];
@@ -192,11 +146,151 @@ if(isset($_POST['step']) && $_POST['step'] == 1)
 
     if(empty($error_list))
     {
-        include('themes/deeppurple/setup3.tpl');
+echo <<<HEREDOC
+
+<html>
+<head>
+<style>
+    body 
+    {
+        background-color: #FFFFFF;
+        font-family: Arial;
+    }
+    .header
+    {
+        font-size: 20pt;
+        text-align: center;
+    }
+    .center
+    {
+        width: 50%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .segment
+    {
+        overflow: auto;
+        margin-top: 15px;
+    }
+    .outline
+    {
+        border-style: solid;
+        border-color: #BB1111;
+        border-width: 1px;
+        padding: 10px;
+        width: 500px;
+        clear: both;
+        margin-top: 30px;
+    }
+    .legend
+    {
+        background-color: #FFFFFF;
+        float: left;
+        position: relative;
+        top: -20px;
+        left: 30px;
+        padding-left: 10px;
+        padding-right: 10px;
+        float: clear;
+    }
+    .legend-spacer
+    {
+        margin-top: 20px;
+    }
+    .text-center
+    {
+        text-align: center;
+    }
+}
+</style>
+</head>
+<body>
+<div class = "header">INSTALLED</div>
+    <div class = "center outline">
+        <div class = "legend">Great Success!</div>
+        <div class = "segment legend-spacer">
+            <div class = "text-center">TAG installed successfully!</div>
+        </div>
+    </div>
+</body>
+</html>
+HEREDOC;
     }
     else
     {
-        print_r($error_list);
+echo <<<HEREDOC
+
+<html>
+<head>
+<style>
+    body 
+    {
+        background-color: #FFFFFF;
+        font-family: Arial;
+    }
+    .header
+    {
+        font-size: 20pt;
+        text-align: center;
+    }
+    .center
+    {
+        width: 50%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .segment
+    {
+        overflow: auto;
+        margin-top: 15px;
+    }
+    .outline
+    {
+        border-style: solid;
+        border-color: #BB1111;
+        border-width: 1px;
+        padding: 10px;
+        width: 500px;
+        clear: both;
+        margin-top: 30px;
+    }
+    .legend
+    {
+        background-color: #FFFFFF;
+        float: left;
+        position: relative;
+        top: -20px;
+        left: 30px;
+        padding-left: 10px;
+        padding-right: 10px;
+        float: clear;
+    }
+    .legend-spacer
+    {
+        margin-top: 20px;
+    }
+    .text-center
+    {
+        text-align: center;
+    }
+}
+</style>
+</head>
+<body>
+<div class = "header">INSTALLED... NOT!</div>
+    <div class = "center outline">
+        <div class = "legend">Epic Fail!</div>
+        <div class = "segment legend-spacer">
+            <div class = "text-center">Here is what happened:
+HEREDOC;
+print_r($error_list);
+echo <<<HEREDOC
+</div>
+        </div>
+    </div>
+</body>
+</html>
+HEREDOC;
     }
 }
 else
@@ -261,7 +355,7 @@ echo <<<HEREDOC
     {
         margin-top: 20px;
     }
-    .submit
+    .text-center
     {
         text-align: center;
     }
@@ -281,7 +375,7 @@ echo <<<HEREDOC
 </head>
 <body>
 <div class = "header">INSTALLATION</div>
-<form name = "input" action = "setup.php" method = "post">
+<form name = "input" action = "setup.php?install=1" method = "post">
     <div class = "center outline">
         <div class = "legend">Database</div>
         <div class = "segment legend-spacer">
@@ -337,7 +431,7 @@ echo <<<HEREDOC
     <div class = "center submit-outline">
         <div class = "legend">Submit</div>
         <div class = "segment legend-spacer">
-            <div class = "submit"><input type = "submit" value = "Submit" /></div>
+            <div class = "text-center"><input type = "submit" value = "Submit" /></div>
         </div>
     </div>
 </form>

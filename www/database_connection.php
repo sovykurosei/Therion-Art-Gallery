@@ -1,15 +1,12 @@
 <?php
 
-$connection_object = new database_connection();
-$connection = $connection_object->get_connection();
-
 class database_connection
 {
     private $connection;
     function __construct()
     {
         $host = 'localhost';
-        $username = 'tagger';
+        $username = 'root';
         $password = 'tag';
         $database = 'tag';
 
