@@ -53,6 +53,7 @@ a:active
     padding-top: 10px;
     margin-top: -10px;
     width: 500px;
+    clear: both;
 }
 .header-left
 {
@@ -113,4 +114,10 @@ a:active
     clear: both;
     margin-top: 30px;
     float: clear;
+}
+.header-divider
+{
+    text-align: center;
+    float: left;
+    width: 33%;
 }

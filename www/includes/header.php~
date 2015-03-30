@@ -1,9 +1,7 @@
 <?php
 
-if(isset($_SESSION['logged_in']))
+if(isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == 1)
 {
-    $avatar_location = get_avatar($_SESSION['account_id'], $connection);
-
     $_SESSION['avatar_url'] = $avatar_location;
 
     include('themes/canwhite/header_logged.tpl');
@@ -20,8 +18,6 @@ function get_notifications($account_id, $connection)
     $statement->bindParam(':account_id', $account_id);
     $statement->execute();
     $account_notifications = $statement->fetchAll();
-
-
 }
 
 ?>
